@@ -43,3 +43,5 @@ cp -v ./usr/share/applications/obsidian.desktop           ./AppDir
 cp -v ./usr/share/icons/hicolor/256x256/apps/obsidian.png ./AppDir
 cp -v ./usr/share/icons/hicolor/256x256/apps/obsidian.png ./AppDir/.DirIcon
 rm -rf ./data.tar.xz ./control.tar.gz ./usr ./opt
+
+echo "$DEB_LINK" | awk -F'/' '{print $(NF-1)}' > ~/version
