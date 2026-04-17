@@ -28,7 +28,7 @@ get-debloated-pkgs --add-common --prefer-nano
 echo "Getting app..."
 echo "---------------------------------------------------------------"
 TARBALL_LINK=$(wget https://api.github.com/repos/obsidianmd/obsidian-releases/releases -O - \
-	| sed 's/[()",{} ]/\n/g' | grep -o "https.*$farch.tar.gz")
+	| sed 's/[()",{} ]/\n/g' | grep -o "https.*/obsidian.*.tar.gz")
 
 # for aarch64 they use arm64, but x86_64 has no arch in its name
 case "$ARCH" in
