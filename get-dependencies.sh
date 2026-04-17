@@ -27,21 +27,22 @@ get-debloated-pkgs --add-common --prefer-nano
 
 echo "Getting app..."
 echo "---------------------------------------------------------------"
-case "$ARCH" in # they use AMD64 and ARM64 for the deb links
-	x86_64)  deb_arch=amd64;;
-	# Upstream does not provide aarch64 debs, but lets leave the code just in case it happens in the future
-	aarch64) deb_arch=arm64;;
-esac
-DEB_LINK=$(wget https://api.github.com/repos/obsidianmd/obsidian-releases/releases -O - \
-      | sed 's/[()",{} ]/\n/g' | grep -o -m 1 "https.*$deb_arch.deb")
-wget --retry-connrefused --tries=30 "$DEB_LINK" -O /tmp/app.deb
-mkdir -p ./AppDir/bin
-ar xvf /tmp/app.deb
-tar -xvf ./data.tar.xz
-mv -v ./opt/Obsidian/* ./AppDir/bin
-cp -v ./usr/share/applications/obsidian.desktop           ./AppDir
-cp -v ./usr/share/icons/hicolor/256x256/apps/obsidian.png ./AppDir
-cp -v ./usr/share/icons/hicolor/256x256/apps/obsidian.png ./AppDir/.DirIcon
-rm -rf ./data.tar.xz ./control.tar.gz ./usr ./opt
+TARBALL_LINK=$(wget https://api.github.com/repos/obsidianmd/obsidian-releases/releases -O - \
+	| sed 's/[()",{} ]/\n/g' | grep -o "https.*$farch.tar.gz")
 
-echo "$DEB_LINK" | awk -F'/' '{print $(NF-1)}' > ~/version
+# for aarch64 they use arm64, but x86_64 has no arch in its name
+case "$ARCH" in
+	x86_64)  TARBALL_LINK=$(echo "$TARBALL_LINK" | grep -v arm64 | head -1);;
+	aarch64) TARBALL_LINK=$(echo "$TARBALL_LINK" | grep arm64 | head -1);;
+esac
+
+wget --retry-connrefused --tries=30 "$TARBALL_LINK" -O /tmp/temp.tar.gz
+tar -xvf /tmp/temp.tar.gz
+
+mkdir -p ./AppDir/bin
+mv -v ./obsidian-*/* ./AppDir/bin
+cp -v ./AppDir/bin/resources/icon.png ./AppDir
+cp -v ./AppDir/bin/resources/icon.png ./AppDir/.DirIcon
+rm -rf ./obsidian-*/
+
+echo "$TARBALL_LINK" | awk -F'/' '{print $(NF-1)}' > ~/version
