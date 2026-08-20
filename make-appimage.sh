@@ -8,7 +8,6 @@ export OUTPATH=./dist
 export ADD_HOOKS="self-updater.hook:fix-namespaces.hook"
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
 export OPTIMIZE_LAUNCH=1
-export STARTUPWMCLASS=md.Obsidian
 
 # Deploy dependencies
 quick-sharun ./AppDir/bin/*
